@@ -229,14 +229,20 @@ function onKeydown(event: KeyboardEvent): void {
 
 /* ---------------- demo ---------------- */
 
-function runDemo(step = 0): void {
+function runDemo(step = 0, loop = false): void {
   if (!hud) return;
-  if (step === 0) hud.pushLog("Demo 模式：展示四種情緒", false);
+  if (step === 0) {
+    hud.pushLog(loop ? "Demo 模式：自動循環播放" : "Demo 模式：展示四種情緒", false);
+    // A demo is for looking at, so always start from the full panel.
+    hud.setCollapsed(false);
+    void saveHudCollapsed(false);
+  }
   const result = DEMO_RESULTS[step];
   if (!result) return;
   applyResult(result);
-  if (step + 1 < DEMO_RESULTS.length) {
-    demoTimer = window.setTimeout(() => runDemo(step + 1), DEMO_STEP_MS);
+  const next = step + 1 < DEMO_RESULTS.length ? step + 1 : loop ? 0 : -1;
+  if (next >= 0) {
+    demoTimer = window.setTimeout(() => runDemo(next, loop), DEMO_STEP_MS);
   }
 }
 
@@ -258,7 +264,7 @@ chrome.runtime.onMessage.addListener((message: ContentRequest, _sender, sendResp
     void (async () => {
       await start();
       if (demoTimer !== null) window.clearTimeout(demoTimer);
-      runDemo(0);
+      runDemo(0, message.loop === true);
       sendResponse({ ok: true });
     })();
     return true;

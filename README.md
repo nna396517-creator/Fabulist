@@ -76,13 +76,9 @@ npm run build
 npm run demo
 ```
 
-`npm run demo` 會做三件事：在 `http://localhost:8787/chat.html` 提供示範聊天室、用一個獨立的暫存設定檔（`.chrome-profile/`，已加入 `.gitignore`）啟動 Chrome、透過 DevTools 協定的 `Extensions.loadUnpacked` 把 `dist/` 載入。之所以不用 `--load-extension` 參數，是因為新版 Chrome 穩定版已經不理會它。
+`npm run demo` 全自動，不需要任何點擊：它會在 `http://localhost:8787/chat.html` 提供示範聊天室、用一個獨立的暫存設定檔（`.chrome-profile/`，已加入 `.gitignore`）啟動 Chrome、透過 DevTools 協定的 `Extensions.loadUnpacked` 載入 `dist/`、幫你把 `localhost` 加進啟用清單、重新載入示範頁，最後送出循環播放的 Demo。HUD 會每兩秒切換一次，依序播放開心、困惑、生氣、感謝並不斷重複，讓你看完血條升降、變化量浮出、頭像動畫、狀態徽章與戰鬥紀錄。之所以不用 `--load-extension` 參數，是因為新版 Chrome 穩定版已經不理會它。
 
-Chrome 開好之後：
-
-1. 點工具列的擴充套件圖示（沒看到就點拼圖圖示），「目前網站」會顯示 `localhost`，把「啟用」打勾
-2. 按「Demo 展示」：HUD 會每兩秒切換一次，依序播放開心、困惑、生氣、感謝四種假結果，讓你看完血條升降、變化量浮出、頭像動畫、狀態徽章與戰鬥紀錄
-3. 想走完整流程（會真的呼叫 API）：填好 API key 之後，按示範頁上的「收到一則新訊息（對方）」，HUD 會進入分析中的閃爍狀態，回來之後就能用 Tab 採用建議
+想走完整流程（會真的呼叫 API）：點擴充套件圖示填好 API key，再按示範頁上的「收到一則新訊息（對方）」，HUD 會進入分析中的閃爍狀態，回來之後就能用 Tab 採用建議。popup 裡的「Demo 展示」按鈕則是播一輪就停。
 
 如果你想用自己平常的 Chrome，改走「安裝」那一節的「載入未封裝項目」，再執行 `npm run demo:server` 只開示範頁即可。直接用 `file://` 開 `demo/chat.html` 會因為擴充套件預設沒有本機檔案權限而讓 popup 顯示「此頁面不支援」。
 

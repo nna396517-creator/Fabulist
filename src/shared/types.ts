@@ -93,7 +93,7 @@ export type TestConnectionResponse = { ok: true } | { ok: false; error: AnalyzeE
 
 /** popup -> content script */
 export type ContentRequest =
-  | { type: "demo" }
+  | { type: "demo"; loop?: boolean }
   | { type: "get-state" }
   | { type: "site-toggled"; enabled: boolean };
 
