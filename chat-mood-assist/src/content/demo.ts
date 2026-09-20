@@ -1,20 +1,19 @@
 import type { AnalysisResult } from "../shared/types.js";
 
-/** Canned results so every animation can be seen without an API key or a real chat. */
-export const DEMO_RESULTS: AnalysisResult[] = [
+/** One beat of the demo: what the other party sends, and what the model would answer. */
+export interface DemoStep extends AnalysisResult {
+  /** The incoming message that produces this emotion. */
+  incoming: string;
+}
+
+/**
+ * Canned results so the whole loop can be seen without an API key or a real chat.
+ * The four steps tell one small story: the customer gets lost, loses patience,
+ * is won back, and finally the parcel arrives.
+ */
+export const DEMO_RESULTS: DemoStep[] = [
   {
-    emotion: "joy",
-    intensity: 4,
-    valence: 0.82,
-    arousal: 0.55,
-    summary: "對方剛收到好消息，語氣輕快還帶了驚嘆號。",
-    suggestions: [
-      { text: "太好了，聽起來一切都很順利！", tone: "casual" },
-      { text: "恭喜你，這個結果真的值得開心。", tone: "empathetic" },
-      { text: "很高興聽到這個消息。", tone: "concise" },
-    ],
-  },
-  {
+    incoming: "等等，所以我是要重新下單，還是直接等就好？我剛剛問過一次還是有點搞不懂。",
     emotion: "confusion",
     intensity: 3,
     valence: 0.05,
@@ -27,6 +26,7 @@ export const DEMO_RESULTS: AnalysisResult[] = [
     ],
   },
   {
+    incoming: "我已經等三天了，到底什麼時候才會出貨？這樣真的很誇張。",
     emotion: "anger",
     intensity: 5,
     valence: -0.85,
@@ -39,6 +39,7 @@ export const DEMO_RESULTS: AnalysisResult[] = [
     ],
   },
   {
+    incoming: "剛剛收到出貨通知了，謝謝你幫忙處理，這次真的辛苦你了。",
     emotion: "gratitude",
     intensity: 4,
     valence: 0.66,
@@ -50,4 +51,25 @@ export const DEMO_RESULTS: AnalysisResult[] = [
       { text: "隨時找我。", tone: "casual" },
     ],
   },
+  {
+    incoming: "包裹今天早上就送到了，東西完全沒問題，這次速度超快！",
+    emotion: "joy",
+    intensity: 4,
+    valence: 0.82,
+    arousal: 0.55,
+    summary: "對方剛收到好消息，語氣輕快還帶了驚嘆號。",
+    suggestions: [
+      { text: "太好了，聽起來一切都很順利！", tone: "casual" },
+      { text: "恭喜你，這個結果真的值得開心。", tone: "empathetic" },
+      { text: "很高興聽到這個消息。", tone: "concise" },
+    ],
+  },
 ];
+
+/** The only channel between the content script and the demo page: no direct DOM access. */
+export const DEMO_EVENT = "cma:demo";
+
+export type DemoEventDetail =
+  | { phase: "incoming"; text: string }
+  | { phase: "reply"; text: string }
+  | { phase: "reset" };

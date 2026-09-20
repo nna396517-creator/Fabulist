@@ -15,6 +15,16 @@ export interface HudCallbacks {
 }
 
 const MAX_LOG_LINES = 3;
+/** Keep in sync with `.panel` in hud-styles.ts. */
+const PANEL_WIDTH = 360;
+/** Gap between the input and a docked panel. */
+const DOCK_GAP = 16;
+/** Smallest gap kept to every viewport edge. */
+const EDGE_MARGIN = 12;
+/** How far past the input an ancestor may reach and still count as the chat column. */
+const COLUMN_SLACK = 220;
+/** How many ancestors to climb while looking for that column. */
+const COLUMN_DEPTH = 4;
 
 const MARKUP = `
 <div class="root" part="root">
@@ -63,7 +73,10 @@ export class Hud {
   private ghost!: HTMLElement;
   private logLines: { text: string; error: boolean }[] = [];
   private lastHp: number | null = null;
-  private collapsed = false;
+  /** The user's explicit choice, or null while they have not made one. */
+  private choice: boolean | null = null;
+  /** True when there is no room beside the chat, so the panel has to sit over it. */
+  private cramped = false;
   private deltaTimer: number | null = null;
 
   constructor(private callbacks: HudCallbacks) {
@@ -89,8 +102,9 @@ export class Hud {
     this.panel = this.query(".panel");
     this.ghost = this.query(".ghost");
     this.query(".js-collapse").addEventListener("click", () => {
-      this.setCollapsed(!this.collapsed);
-      this.callbacks.onCollapseChange(this.collapsed);
+      const collapsed = !this.isCollapsed();
+      this.setCollapsed(collapsed);
+      this.callbacks.onCollapseChange(collapsed);
     });
     document.body.append(this.host);
   }
@@ -99,8 +113,18 @@ export class Hud {
     this.host.remove();
   }
 
-  setCollapsed(collapsed: boolean): void {
-    this.collapsed = collapsed;
+  /** The remembered choice. null means the user has not chosen, so placement decides. */
+  setCollapsed(collapsed: boolean | null): void {
+    this.choice = collapsed;
+    this.renderCollapsed();
+  }
+
+  private isCollapsed(): boolean {
+    return this.choice ?? this.cramped;
+  }
+
+  private renderCollapsed(): void {
+    const collapsed = this.isCollapsed();
     this.panel.classList.toggle("collapsed", collapsed);
     this.query(".js-collapse").textContent = collapsed ? "[+]" : "[-]";
   }
@@ -114,13 +138,39 @@ export class Hud {
     this.hideGhost();
   }
 
-  /** Keeps the panel just above the chat input, and the ghost on top of it. */
+  /**
+   * Docks the panel beside the chat column so it never covers the messages, and
+   * only falls back to sitting above the input when neither side has room.
+   */
   anchorTo(input: HTMLElement): void {
     const rect = input.getBoundingClientRect();
-    const width = this.panel.offsetWidth || 360;
-    const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
-    this.panel.style.left = `${left}px`;
-    this.panel.style.bottom = `${Math.max(8, window.innerHeight - rect.top + 10)}px`;
+    const column = columnRect(input, rect);
+    const width = this.panel.offsetWidth || PANEL_WIDTH;
+    // The room test uses the full width so collapsing cannot flip the side.
+    const needed = PANEL_WIDTH + DOCK_GAP + EDGE_MARGIN;
+
+    let left: number;
+    let bottom: number;
+    if (window.innerWidth - column.right >= needed) {
+      this.cramped = false;
+      left = column.right + DOCK_GAP;
+      bottom = window.innerHeight - rect.bottom;
+    } else if (column.left >= needed) {
+      this.cramped = false;
+      left = column.left - DOCK_GAP - width;
+      bottom = window.innerHeight - rect.bottom;
+    } else {
+      // Nothing fits beside the chat, so cover as little of it as possible.
+      this.cramped = true;
+      left = rect.left;
+      bottom = window.innerHeight - rect.top + 10;
+    }
+    this.renderCollapsed();
+
+    const height = this.panel.offsetHeight;
+    const maxBottom = Math.max(EDGE_MARGIN, window.innerHeight - height - EDGE_MARGIN);
+    this.panel.style.left = `${clamp(left, EDGE_MARGIN, window.innerWidth - width - EDGE_MARGIN)}px`;
+    this.panel.style.bottom = `${clamp(bottom, EDGE_MARGIN, maxBottom)}px`;
     mirrorInputStyle(input, this.ghost);
   }
 
@@ -279,4 +329,27 @@ export class Hud {
     if (!el) throw new Error(`HUD element missing: ${selector}`);
     return el;
   }
+}
+
+/**
+ * The edges of the chat column the input sits in, so the panel docks clear of the
+ * whole card instead of only the text box. Ancestors that reach far past the input
+ * (a full-width page wrapper) are not a column and stop the climb.
+ */
+function columnRect(input: HTMLElement, rect: DOMRect): { left: number; right: number } {
+  let left = rect.left;
+  let right = rect.right;
+  let node = input.parentElement;
+  for (let depth = 0; node && node !== document.body && depth < COLUMN_DEPTH; depth++) {
+    const box = node.getBoundingClientRect();
+    if (box.right - rect.right > COLUMN_SLACK || rect.left - box.left > COLUMN_SLACK) break;
+    left = Math.min(left, box.left);
+    right = Math.max(right, box.right);
+    node = node.parentElement;
+  }
+  return { left, right };
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(value, max));
 }
