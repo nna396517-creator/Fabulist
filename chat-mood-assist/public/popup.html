@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <title>Chat Mood Assist</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <h1>Chat Mood Assist</h1>
+
+    <section class="site">
+      <div class="row">
+        <div>
+          <div class="label">目前網站</div>
+          <div class="host" id="host">--</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="enabled" />
+          <span>啟用</span>
+        </label>
+      </div>
+      <p class="mood" id="mood">尚未偵測到情緒</p>
+    </section>
+
+    <section>
+      <label class="label" for="apiKey">Anthropic API key</label>
+      <input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off" />
+      <p class="note">只存在本機 chrome.storage.local，不會同步、不會上傳到任何伺服器。</p>
+    </section>
+
+    <section>
+      <label class="label" for="model">模型</label>
+      <select id="model">
+        <option value="claude-opus-5">claude-opus-5（預設）</option>
+        <option value="claude-sonnet-5">claude-sonnet-5</option>
+        <option value="claude-haiku-4-5">claude-haiku-4-5</option>
+      </select>
+    </section>
+
+    <div class="actions">
+      <button id="demo" type="button" class="primary">Demo 展示</button>
+      <button id="test" type="button">測試連線</button>
+    </div>
+
+    <p class="status" id="status"></p>
+  </body>
+  <script type="module" src="popup.js"></script>
+</html>

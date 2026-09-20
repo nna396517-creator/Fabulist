@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat Mood Assist 測試聊天室</title>
+    <style>
+      :root { color-scheme: light; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #eef1f6;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", sans-serif;
+      }
+      .chat {
+        width: min(560px, 92vw);
+        height: 76vh;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(15, 23, 42, .14);
+        overflow: hidden;
+      }
+      .head {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: #f8fafc;
+      }
+      .msg {
+        max-width: 72%;
+        padding: 8px 11px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+      .msg.in { align-self: flex-start; background: #e2e8f0; color: #0f172a; }
+      .msg.out { align-self: flex-end; background: #2563eb; color: #fff; }
+      .composer { border-top: 1px solid #e2e8f0; padding: 10px; display: flex; gap: 8px; }
+      textarea {
+        flex: 1;
+        resize: none;
+        height: 56px;
+        padding: 9px 11px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        font: inherit;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      button {
+        padding: 0 14px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .tools { margin-top: 12px; display: flex; gap: 8px; }
+      .tools button { padding: 7px 12px; }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div class="chat">
+        <div class="head">測試聊天室（對方：小林）</div>
+        <div class="messages" id="messages">
+          <div class="msg in">你好，我上週下的訂單什麼時候會出貨？</div>
+          <div class="msg out">您好，我幫您查一下訂單狀態。</div>
+        </div>
+        <div class="composer">
+          <textarea id="draft" placeholder="輸入訊息..."></textarea>
+          <button id="send" type="button">送出</button>
+        </div>
+      </div>
+      <div class="tools">
+        <button id="incoming" type="button">收到一則新訊息（對方）</button>
+      </div>
+    </div>
+
+    <script>
+      const INCOMING = [
+        "我已經等三天了，到底什麼時候才會出貨？這樣真的很誇張。",
+        "剛剛看到出貨通知了，謝謝你幫忙處理！",
+        "等等，所以我要重新下單還是直接等？我有點搞不懂。",
+        "太好了，這次速度超快，很滿意！",
+      ];
+      let index = 0;
+
+      const messages = document.getElementById("messages");
+
+      function append(text, direction) {
+        const node = document.createElement("div");
+        node.className = `msg ${direction}`;
+        node.textContent = text;
+        messages.append(node);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      document.getElementById("incoming").addEventListener("click", () => {
+        append(INCOMING[index % INCOMING.length], "in");
+        index++;
+      });
+
+      document.getElementById("send").addEventListener("click", () => {
+        const draft = document.getElementById("draft");
+        if (!draft.value.trim()) return;
+        append(draft.value.trim(), "out");
+        draft.value = "";
+      });
+    </script>
+  </body>
+</html>

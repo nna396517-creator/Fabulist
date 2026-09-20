@@ -1,0 +1,24 @@
+{
+  "name": "chat-mood-assist",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension PoC: detects the other party's emotion in a web chat and shows it as a game-style HUD plus Tab-acceptable ghost-text replies.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "icons": "node scripts/gen-icons.mjs",
+    "typecheck": "tsc --noEmit",
+    "demo": "node scripts/launch-chrome.mjs",
+    "demo:server": "node scripts/demo-server.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}
