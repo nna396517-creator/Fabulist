@@ -29,9 +29,11 @@ export async function saveApiKey(apiKey: string): Promise<void> {
   await chrome.storage.local.set({ [API_KEY]: apiKey.trim() });
 }
 
-export async function loadHudCollapsed(): Promise<boolean> {
+/** null when the user has never used the collapse button, so the HUD may decide. */
+export async function loadHudCollapsed(): Promise<boolean | null> {
   const stored = await chrome.storage.local.get(HUD_COLLAPSED);
-  return stored[HUD_COLLAPSED] === true;
+  const collapsed = stored[HUD_COLLAPSED];
+  return typeof collapsed === "boolean" ? collapsed : null;
 }
 
 export async function saveHudCollapsed(collapsed: boolean): Promise<void> {
