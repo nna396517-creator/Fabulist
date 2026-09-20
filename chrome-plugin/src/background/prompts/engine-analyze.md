@@ -13,7 +13,7 @@
 
 ## 第一步：判讀對方情緒
 
-- `emotion`：angry（生氣）／sad（難過、失望）／happy（開心、滿意）／anxious（焦慮、急迫）／neutral（平穩）
+- `emotion`：angry（生氣）／sad（難過、失望）／happy（開心、滿意）／anxious（焦慮、急迫、偏趕）／neutral（平穩）。對方在催、或比他平常明顯更趕時選 anxious，不要選 neutral
 - `mood`：對方心情 HP，0–100。100 是非常愉快，50 是公事公辦，30 以下代表關係正在受損
 - `tension`：怒氣／張力，0–100。看催促、質疑、反問、情緒標點、同一件事被問第二次
 - `effects`：0–3 個狀態效果，像遊戲的 buff/debuff。`icon` 是單一 emoji，`label` 是 2–4 個中文字（例如 憤怒、急迫、失望、期待、信任），`level` 1–5

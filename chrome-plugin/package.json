@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "esbuild src/background/index.js --bundle --format=esm --target=chrome120 --loader:.md=text --outfile=dist/background.js",
-    "watch": "npm run build -- --watch"
+    "watch": "npm run build -- --watch",
+    "smoke": "esbuild scripts/smoke.js --bundle --platform=node --format=esm --loader:.md=text --outfile=.smoke/smoke.mjs --log-level=warning && node .smoke/smoke.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "latest"
