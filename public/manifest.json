@@ -3,16 +3,27 @@
   "name": "Chat Mood Assist",
   "version": "0.1.0",
   "description": "偵測聊天對方的情緒，用遊戲式血條 HUD 呈現，並在輸入框內給出 Tab 可採用的回覆建議。",
-  "permissions": ["storage", "activeTab"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>", "file:///*"],
-      "js": ["content.js"],
+      "matches": [
+        "<all_urls>",
+        "file:///*"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle",
       "all_frames": false
     }

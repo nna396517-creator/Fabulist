@@ -71,11 +71,13 @@ npm run typecheck  # tsc --noEmit
 
 不需要 API key 也能把整套 HUD 動畫看過一輪：
 
-1. 在 `chrome://extensions` 找到 Chat Mood Assist，點「詳細資料」，打開「允許存取檔案網址」（本機檔案的網域名稱是空的，本專案統一用 `file://` 當作它的啟用鍵）
-2. 直接用瀏覽器開啟專案裡的 `demo/chat.html`
-3. 打開 popup，把「啟用」打勾（網域會顯示成 `file://`）
+1. 在專案目錄執行 `npm run demo`，它會用 Node 內建的 http 模組在 `http://localhost:8787/chat.html` 提供示範頁（不必安裝任何東西）
+2. 用 Chrome 開啟該網址
+3. 打開 popup，把「啟用」打勾（網域會顯示成 `localhost`）
 4. 按 popup 裡的「Demo 展示」：HUD 會每兩秒切換一次，依序播放開心、困惑、生氣、感謝四種假結果，讓你看完血條升降、變化量浮出、頭像動畫、狀態徽章與戰鬥紀錄
 5. 想走完整流程（會真的呼叫 API）：設定好 API key 之後，按示範頁上的「收到一則新訊息（對方）」，HUD 會進入分析中的閃爍狀態，回來之後就能用 Tab 採用建議
+
+為什麼不用直接開 `demo/chat.html`：Chrome 預設不給擴充套件讀 `file://` 分頁，popup 會顯示「此頁面不支援」而且開關會鎖住。若你真的想用本機檔案，要先在 `chrome://extensions` 的「詳細資料」裡打開「允許存取檔案網址」，此時它會以 `file://` 作為啟用鍵。
 
 示範頁本身是一個很普通的假聊天室（訊息清單 + textarea + 送出鈕），剛好可以驗證通用選取器抓不抓得到輸入框與訊息區。
 
