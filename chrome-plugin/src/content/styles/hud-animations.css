@@ -1,0 +1,93 @@
+/* 動畫層：這個檔案交給動畫夥伴。以下是可用的最小版本，掛鉤說明見 hud.js 檔頭。 */
+
+.fab-bar__fill {
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s;
+}
+
+/* 浮動傷害字 */
+.fab-float {
+  animation: fab-float-up 1.2s ease-out forwards;
+}
+
+@keyframes fab-float-up {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  15% { transform: translateY(-6px) scale(1.25); opacity: 1; }
+  100% { transform: translateY(-30px) scale(1); opacity: 0; }
+}
+
+/* HP < 30：閃紅 */
+.is-danger .fab-panel {
+  animation: fab-danger-flash 0.9s ease-in-out infinite;
+}
+
+.is-danger .fab-danger {
+  animation: fab-blink 0.6s steps(2, start) infinite;
+}
+
+@keyframes fab-danger-flash {
+  0%, 100% { border-color: var(--fab-line); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
+  50% { border-color: var(--fab-red); box-shadow: 0 0 24px rgba(244, 63, 94, 0.55); }
+}
+
+@keyframes fab-blink {
+  to { visibility: hidden; }
+}
+
+/* 情緒頭像 */
+[data-emotion='angry'] .fab-avatar {
+  border-color: var(--fab-red);
+  box-shadow: 0 0 16px rgba(244, 63, 94, 0.7);
+}
+
+[data-emotion='angry'] .fab-avatar__emoji {
+  animation: fab-shake 0.25s linear infinite;
+}
+
+[data-emotion='sad'] .fab-avatar__emoji {
+  animation: fab-droop 2.4s ease-in-out infinite;
+}
+
+[data-emotion='happy'] .fab-avatar__emoji {
+  animation: fab-bounce 0.7s cubic-bezier(0.3, 0, 0.4, 1) infinite alternate;
+}
+
+[data-emotion='anxious'] .fab-avatar__emoji {
+  animation: fab-twitch 0.12s steps(2) infinite;
+}
+
+@keyframes fab-shake {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  25% { transform: translate(-2px, 1px) rotate(-4deg); }
+  75% { transform: translate(2px, -1px) rotate(4deg); }
+}
+
+@keyframes fab-droop {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(5px) rotate(-8deg) scale(0.94); }
+}
+
+@keyframes fab-bounce {
+  from { transform: translateY(3px) scale(1.04, 0.96); }
+  to { transform: translateY(-9px) scale(0.97, 1.03); }
+}
+
+@keyframes fab-twitch {
+  0% { transform: translate(-1px, 0); }
+  100% { transform: translate(1px, -1px); }
+}
+
+/* 戰鬥紀錄新行 */
+.fab-log__line.is-new {
+  animation: fab-log-in 0.35s ease-out;
+}
+
+@keyframes fab-log-in {
+  from { opacity: 0; transform: translateX(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fab-root *, .fab-root *::before, .fab-root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

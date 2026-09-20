@@ -1,0 +1,40 @@
+* { box-sizing: border-box; }
+body {
+  width: 320px;
+  margin: 0;
+  padding: 12px;
+  font: 13px/1.5 system-ui, 'Noto Sans TC', 'PingFang TC', sans-serif;
+  color: #ece9f7;
+  background: #14121f;
+}
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+h1 { margin: 0; font: 700 14px ui-monospace, Menlo, monospace; letter-spacing: 0.18em; }
+.badge { padding: 1px 8px; font-size: 11px; border-radius: 999px; border: 1px solid #3a3556; color: #9a94b8; }
+.badge.is-on { color: #4ade80; border-color: #4ade80; }
+.row { display: flex; gap: 8px; }
+.row button { flex: 1; }
+button {
+  padding: 7px 10px;
+  font: inherit;
+  color: #ece9f7;
+  background: #1d1a2e;
+  border: 1px solid #3a3556;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { border-color: #a855f7; }
+button.primary { background: #a855f7; border-color: #a855f7; color: #fff; font-weight: 600; }
+form { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #3a3556; }
+label { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: #9a94b8; }
+input, textarea, select {
+  padding: 6px 8px;
+  font: 13px/1.4 inherit;
+  font-family: inherit;
+  color: #ece9f7;
+  background: #0b0a12;
+  border: 1px solid #3a3556;
+  border-radius: 6px;
+  resize: vertical;
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: #a855f7; }
+.hint { margin: 6px 0 0; font-size: 11px; color: #9a94b8; }

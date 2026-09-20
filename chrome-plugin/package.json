@@ -1,0 +1,17 @@
+{
+  "name": "fabulist-chrome-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fabulist PoC — RPG 式情緒 HUD 與回信輔助 (Gmail)",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/background/index.js --bundle --format=esm --target=chrome120 --loader:.md=text --outfile=dist/background.js",
+    "watch": "npm run build -- --watch"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

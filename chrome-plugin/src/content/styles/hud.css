@@ -1,0 +1,388 @@
+/* HUD 版面與外觀。動畫請寫在 hud-animations.css。 */
+:host {
+  all: initial;
+}
+
+.fab-root {
+  --fab-bg: #14121f;
+  --fab-panel: #1d1a2e;
+  --fab-line: #3a3556;
+  --fab-text: #ece9f7;
+  --fab-dim: #9a94b8;
+  --fab-green: #4ade80;
+  --fab-yellow: #facc15;
+  --fab-red: #f43f5e;
+  --fab-purple: #a855f7;
+  font-family: ui-monospace, 'SF Mono', Menlo, 'Noto Sans TC', 'PingFang TC', monospace;
+  font-size: 12px;
+  color: var(--fab-text);
+}
+
+.fab-root *,
+.fab-root *::before,
+.fab-root *::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.fab-panel {
+  position: fixed;
+  right: 16px;
+  top: 72px;
+  z-index: 2147483000;
+  width: 320px;
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+  background: var(--fab-bg);
+  border: 2px solid var(--fab-line);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.fab-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--fab-panel);
+  border-bottom: 2px solid var(--fab-line);
+  cursor: move;
+  user-select: none;
+}
+
+.fab-title {
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.fab-source {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--fab-dim);
+  letter-spacing: 0.1em;
+}
+
+.fab-toggle {
+  all: unset;
+  width: 18px;
+  text-align: center;
+  color: var(--fab-dim);
+  cursor: pointer;
+}
+
+.fab-toggle:hover {
+  color: var(--fab-text);
+}
+
+.fab-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.is-collapsed .fab-body {
+  display: none;
+}
+
+.fab-battle {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.fab-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--fab-panel);
+  border: 2px solid var(--fab-line);
+}
+
+.fab-avatar__emoji {
+  display: inline-block;
+  font-size: 38px;
+  line-height: 1;
+}
+
+.fab-bars {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fab-sender {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fab-bar {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px 1fr 26px;
+  align-items: center;
+  gap: 6px;
+}
+
+.fab-bar__label {
+  font-size: 10px;
+  color: var(--fab-dim);
+}
+
+.fab-bar__track {
+  height: 10px;
+  background: #0b0a12;
+  border: 1px solid var(--fab-line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.fab-bar__fill {
+  width: 0;
+  height: 100%;
+  background: var(--fab-green);
+}
+
+.fab-bar--hp[data-level='mid'] .fab-bar__fill {
+  background: var(--fab-yellow);
+}
+
+.fab-bar--hp[data-level='low'] .fab-bar__fill {
+  background: var(--fab-red);
+}
+
+.fab-bar--tension .fab-bar__fill {
+  background: var(--fab-purple);
+}
+
+.fab-bar__value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.fab-danger {
+  display: none;
+  position: absolute;
+  left: 58px;
+  top: -13px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--fab-red);
+  border-radius: 3px;
+}
+
+.is-danger .fab-danger {
+  display: block;
+}
+
+.fab-floats {
+  position: absolute;
+  right: 30px;
+  top: -4px;
+  pointer-events: none;
+}
+
+.fab-float {
+  position: absolute;
+  right: 0;
+  font-size: 14px;
+  font-weight: 800;
+  text-shadow: 0 1px 0 #000;
+}
+
+.fab-float--neg {
+  color: var(--fab-red);
+}
+
+.fab-float--pos {
+  color: var(--fab-green);
+}
+
+.fab-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.fab-effects:empty,
+.fab-evidence:empty,
+.fab-register:empty,
+.fab-read:empty,
+.fab-log:empty,
+.fab-status:empty {
+  display: none;
+}
+
+.fab-effect {
+  padding: 2px 6px;
+  font-size: 11px;
+  background: var(--fab-panel);
+  border: 1px solid var(--fab-line);
+  border-radius: 999px;
+}
+
+.fab-read {
+  color: var(--fab-text);
+  font-size: 12px;
+}
+
+.fab-read::before {
+  content: '▸ ';
+  color: var(--fab-dim);
+}
+
+.fab-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.fab-quote {
+  padding: 1px 6px;
+  font-family: system-ui, 'Noto Sans TC', 'PingFang TC', sans-serif;
+  color: #1f1a00;
+  background: #fde68a;
+  border-radius: 3px;
+}
+
+.fab-register {
+  font-size: 11px;
+  color: var(--fab-dim);
+}
+
+.fab-register::before {
+  content: '語域 ';
+}
+
+.fab-log {
+  margin: 0;
+  padding: 6px 8px;
+  list-style: none;
+  background: #0b0a12;
+  border: 1px solid var(--fab-line);
+  border-radius: 4px;
+  color: var(--fab-dim);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.fab-log__line:last-child {
+  color: var(--fab-text);
+}
+
+.fab-guard {
+  padding: 5px 8px;
+  font-size: 11px;
+  border: 1px solid var(--fab-line);
+  border-radius: 4px;
+}
+
+.fab-guard.is-flagged {
+  color: #fecdd3;
+  border-color: var(--fab-red);
+  background: rgba(244, 63, 94, 0.12);
+}
+
+.fab-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fab-card {
+  all: unset;
+  display: block;
+  padding: 6px 8px;
+  background: var(--fab-panel);
+  border: 1px solid var(--fab-line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.fab-card:hover,
+.fab-card.is-active {
+  border-color: var(--fab-purple);
+}
+
+.fab-card.is-active {
+  background: #2a2444;
+}
+
+.fab-card__label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 10px;
+  color: var(--fab-purple);
+  letter-spacing: 0.08em;
+}
+
+.fab-card__text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: system-ui, 'Noto Sans TC', 'PingFang TC', sans-serif;
+  line-height: 1.45;
+}
+
+.fab-card.is-active .fab-card__text {
+  -webkit-line-clamp: 6;
+}
+
+.fab-card__why {
+  display: none;
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--fab-dim);
+}
+
+.fab-card.is-active .fab-card__why {
+  display: block;
+}
+
+.fab-hint {
+  font-size: 10px;
+  color: var(--fab-dim);
+  text-align: center;
+}
+
+.fab-status {
+  font-size: 11px;
+  color: var(--fab-dim);
+}
+
+.fab-status[data-kind='error'] {
+  color: var(--fab-red);
+}
+
+/* 輸入框內的灰色 ghost text */
+.fab-ghost {
+  display: none;
+  position: fixed;
+  z-index: 2147482999;
+  margin: 0;
+  color: #9aa0a6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.fab-ghost--block {
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px dashed #c4c7c5;
+  border-radius: 6px;
+  color: #80868b;
+}

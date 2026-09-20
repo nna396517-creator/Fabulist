@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fabulist Demo Mail - an@example.com</title>
+    <link rel="stylesheet" href="mail.css" />
+  </head>
+  <body>
+    <aside class="inbox">
+      <header class="inbox-header">
+        <strong>收件匣</strong>
+        <span class="tag">Fictional scenario · 不會寄出任何東西</span>
+      </header>
+      <button id="new-mail" type="button" class="compose-btn">✏️ 撰寫</button>
+      <ul id="list" class="inbox-list"></ul>
+    </aside>
+
+    <main class="reader">
+      <h2 id="subject" class="subject"></h2>
+      <div id="thread" class="thread"></div>
+      <div class="actions">
+        <button id="reply" type="button">↩ 回覆</button>
+      </div>
+      <form id="composer" class="composer" hidden>
+        <div id="composer-head" class="composer-head"></div>
+        <div id="compose" class="compose-box" role="textbox" contenteditable="true" aria-label="郵件內文"></div>
+        <div class="composer-actions">
+          <button type="submit" class="send">傳送</button>
+          <button id="discard" type="button">捨棄</button>
+        </div>
+      </form>
+    </main>
+
+    <script src="mail.js"></script>
+    <script src="../src/content/state.js"></script>
+    <script src="../src/content/hud.js"></script>
+    <script src="../src/content/suggest.js"></script>
+    <script src="../src/content/demo.js"></script>
+    <script src="../src/content/main.js"></script>
+  </body>
+</html>

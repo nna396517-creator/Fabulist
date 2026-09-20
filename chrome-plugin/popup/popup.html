@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fabulist</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>FABULIST</h1>
+      <span id="key-state" class="badge"></span>
+    </header>
+
+    <section class="row">
+      <button id="demo" type="button" class="primary">▶ Demo</button>
+      <button id="open-mail" type="button">開啟 Demo 信箱頁</button>
+    </section>
+    <p class="hint">Demo 不需要 API key：在目前分頁輪播四種情緒；不是 Gmail 分頁時會改開 Demo 信箱頁。</p>
+
+    <form id="settings">
+      <label>
+        Claude API key
+        <input id="apiKey" type="password" placeholder="sk-ant-..." autocomplete="off" />
+      </label>
+      <label>
+        模型
+        <select id="model">
+          <option value="claude-sonnet-5">Claude Sonnet 5（快，預設）</option>
+          <option value="claude-opus-5">Claude Opus 5（品質優先）</option>
+        </select>
+      </label>
+      <label>
+        姓名
+        <input id="name" type="text" placeholder="周小明" />
+      </label>
+      <label>
+        職稱／公司
+        <input id="role" type="text" placeholder="業務經理 @ 某某科技" />
+      </label>
+      <label>
+        語氣偏好
+        <input id="tone" type="text" placeholder="對客戶用敬語、簡潔、不用表情符號" />
+      </label>
+      <label>
+        補充資訊與事實
+        <textarea id="notes" rows="5" placeholder="一行一筆，例如：&#10;A 案目前進度 80%，預計 10/3 交付&#10;[內部] 報價底線 85 折（只影響判斷，不會寫進回覆）"></textarea>
+      </label>
+      <button type="submit" class="primary">儲存</button>
+      <span id="saved" class="hint"></span>
+    </form>
+    <p class="hint">API key 只存在這台電腦的 chrome.storage.local。設定後，只有在你開始回信／寫信時，該串信件內容才會送到 Claude API 分析。</p>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

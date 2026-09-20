@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Fabulist — 情緒 HUD 回信輔助",
+  "version": "0.1.0",
+  "description": "在 Gmail 讀懂對方情緒，用 RPG 式血條呈現，並在回信時提供文字修正建議。",
+  "permissions": ["storage"],
+  "host_permissions": ["https://mail.google.com/*", "https://api.anthropic.com/*"],
+  "background": { "service_worker": "dist/background.js", "type": "module" },
+  "action": { "default_popup": "popup/popup.html", "default_title": "Fabulist" },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": [
+        "src/content/adapters/gmail.js",
+        "src/content/state.js",
+        "src/content/hud.js",
+        "src/content/suggest.js",
+        "src/content/demo.js",
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/content/styles/hud.css", "src/content/styles/hud-animations.css"],
+      "matches": ["https://mail.google.com/*"]
+    }
+  ]
+}

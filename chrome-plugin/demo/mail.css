@@ -1,0 +1,35 @@
+* { box-sizing: border-box; }
+body {
+  display: flex;
+  margin: 0;
+  min-height: 100vh;
+  font: 14px/1.6 system-ui, 'Noto Sans TC', 'PingFang TC', sans-serif;
+  color: #1f1f1f;
+  background: #f6f8fc;
+}
+button { font: inherit; cursor: pointer; }
+.inbox { flex: none; width: 300px; padding: 16px 12px; border-right: 1px solid #e0e3e7; }
+.inbox-header { display: flex; flex-direction: column; margin-bottom: 12px; }
+.tag { font-size: 11px; color: #5f6368; }
+.compose-btn { width: 100%; margin-bottom: 12px; padding: 10px; background: #c2e7ff; border: 0; border-radius: 14px; }
+.inbox-list { margin: 0; padding: 0; list-style: none; }
+.inbox-item { padding: 8px 10px; border-radius: 10px; cursor: pointer; }
+.inbox-item:hover { background: #eaf1fb; }
+.inbox-item.is-open { background: #d3e3fd; }
+.inbox-item strong { display: block; font-size: 13px; }
+.inbox-item span { display: block; font-size: 12px; color: #5f6368; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.reader { flex: 1; max-width: 760px; margin: 16px; padding: 20px 24px; background: #fff; border-radius: 16px; }
+.subject { margin: 0 0 12px; font-size: 20px; font-weight: 400; }
+.thread { display: flex; flex-direction: column; gap: 12px; }
+.mail { padding-bottom: 12px; border-bottom: 1px solid #eceff1; }
+.mail-from { font-size: 13px; }
+.mail-from span { color: #5f6368; }
+.mail-body { margin-top: 6px; white-space: pre-wrap; }
+.actions { margin-top: 16px; }
+.actions button, .composer-actions button { padding: 7px 18px; background: #fff; border: 1px solid #747775; border-radius: 999px; }
+.composer { margin-top: 16px; border: 1px solid #dadce0; border-radius: 12px; box-shadow: 0 1px 3px rgba(60, 64, 67, 0.2); }
+.composer-head { padding: 8px 14px; font-size: 12px; color: #5f6368; border-bottom: 1px solid #eceff1; }
+.compose-box { min-height: 140px; padding: 12px 14px; outline: none; white-space: pre-wrap; }
+.composer-actions { display: flex; gap: 8px; padding: 8px 14px 12px; }
+.composer-actions .send { color: #fff; background: #0b57d0; border-color: #0b57d0; }
+[hidden] { display: none !important; }
