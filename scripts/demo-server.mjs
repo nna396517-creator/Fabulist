@@ -9,7 +9,7 @@ const root = fileURLToPath(new URL("../demo/", import.meta.url));
 const port = Number(process.env.PORT ?? 8787);
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css" };
 
-createServer(async (req, res) => {
+const server = createServer(async (req, res) => {
   const path = normalize(new URL(req.url ?? "/", "http://x").pathname).replace(/^(\.\.[/\\])+/, "");
   const file = join(root, path === "/" ? "chat.html" : path);
   try {
@@ -19,6 +19,11 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end("not found");
   }
-}).listen(port, "127.0.0.1", () => {
+});
+server.on("error", (err) => {
+  if (err.code !== "EADDRINUSE") throw err;
+  console.log(`port ${port} already in use, reusing the server that is running there`);
+});
+server.listen(port, "127.0.0.1", () => {
   console.log(`demo chat: http://localhost:${port}/chat.html`);
 });

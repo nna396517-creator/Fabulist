@@ -3,13 +3,12 @@
 // --load-extension flag, so Extensions.loadUnpacked is the only scriptable way.
 import "./demo-server.mjs";
 import { spawn } from "node:child_process";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const dist = `${root}dist`;
 const profile = `${root}.chrome-profile`;
-const port = 9222;
 const demoUrl = `http://localhost:${process.env.PORT ?? 8787}/chat.html`;
 const chrome = process.env.CHROME ?? (process.platform === "darwin"
   ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
@@ -18,7 +17,7 @@ const chrome = process.env.CHROME ?? (process.platform === "darwin"
 mkdirSync(profile, { recursive: true });
 const child = spawn(chrome, [
   `--user-data-dir=${profile}`,
-  `--remote-debugging-port=${port}`,
+  "--remote-debugging-port=0",
   "--enable-unsafe-extension-debugging",
   "--no-first-run",
   "--no-default-browser-check",
@@ -26,6 +25,8 @@ const child = spawn(chrome, [
 ], { stdio: "ignore", detached: true });
 child.unref();
 
+// With port 0 Chrome picks a free port and writes it to DevToolsActivePort.
+const port = await waitFor(() => Number(readFileSync(`${profile}/DevToolsActivePort`, "utf8").split("\n")[0]));
 const version = await waitFor(async () => (await fetch(`http://localhost:${port}/json/version`)).json());
 const ws = new WebSocket(version.webSocketDebuggerUrl);
 await new Promise((resolve) => (ws.onopen = resolve));
