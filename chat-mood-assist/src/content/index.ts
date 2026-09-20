@@ -353,6 +353,14 @@ chrome.runtime.onMessage.addListener((message: ContentRequest, _sender, sendResp
 });
 
 async function init(): Promise<void> {
+  // A page that declares itself as our demo page plays the canned loop on its
+  // own, so a copy of demo/chat.html works with zero clicks. This never reaches
+  // the network: demo mode short-circuits the watcher and the API call.
+  if (document.querySelector('meta[name="chat-mood-assist-demo"]')) {
+    await start();
+    runDemo(0, true);
+    return;
+  }
   const settings = await loadSettings();
   // Nothing is created, observed or sent on a site the user has not enabled.
   if (isSiteEnabled(settings, host)) await start();

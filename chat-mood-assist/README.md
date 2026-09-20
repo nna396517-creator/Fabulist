@@ -33,6 +33,18 @@ HUD 只在你啟用的網站出現，而且會盡量停在訊息區外面：面�
 
 灰色提示文字（ghost text）的規則：你還沒打字時直接顯示整句建議；已經打了草稿時，只有在建議「以你的草稿開頭」（不分大小寫）才會把剩下的部分接著顯示，否則隱藏提示但 HUD 照常顯示。
 
+## 沒有 Node 的電腦：直接載入現成的 dist/
+
+`dist/` 已經編好並放在 repo 裡，所以不需要 Node、npm 或任何指令：
+
+1. 從 GitHub 下載整個 repo（Code 按鈕的 Download ZIP）並解壓縮
+2. Chrome 打開 `chrome://extensions`，右上角開啟「開發人員模式」
+3. 點「載入未封裝項目」，選 `chat-mood-assist/dist/` 資料夾
+4. 在 Chat Mood Assist 卡片上點「詳細資料」，打開「允許存取檔案網址」（示範頁是本機檔案，沒有這步擴充套件看不到它）
+5. 用 Chrome 直接開啟 `chat-mood-assist/demo/chat.html`
+
+示範頁本身宣告了 `<meta name="chat-mood-assist-demo">`，擴充套件看到就會自動開始循環播放，不必開 popup、不必勾啟用、也不必按任何按鈕。這個自動模式只播放內建的假結果，不會呼叫 API、不會用到任何金鑰。
+
 ## 安裝
 
 需要 Node 20 以上（開發時使用 Node 26 / npm 11）。
