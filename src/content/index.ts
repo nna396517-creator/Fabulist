@@ -9,14 +9,21 @@ import type {
   ContentState,
 } from "../shared/types.js";
 import { selectAdapter, type Adapter } from "./adapters/index.js";
-import { DEMO_RESULTS } from "./demo.js";
+import { DEMO_EVENT, DEMO_RESULTS, type DemoEventDetail } from "./demo.js";
 import { ghostRemainder, readDraft, restorePlaceholder, suppressPlaceholder } from "./ghost.js";
 import { Hud } from "./hud.js";
 import { insertSuggestion } from "./insert.js";
 
 const DEBOUNCE_MS = 700;
 const RESCAN_MS = 3000;
-const DEMO_STEP_MS = 2000;
+
+/** How long each beat of the demo conversation waits before it plays. */
+const DEMO_INCOMING_MS = 0;
+const DEMO_ANALYZE_MS = 600;
+const DEMO_RESULT_MS = 1100;
+const DEMO_ACCEPT_MS = 1600;
+const DEMO_SEND_MS = 900;
+const DEMO_NEXT_MS = 1400;
 
 const host = hostKeyFromUrl(location.href);
 const adapter: Adapter = selectAdapter(host);
@@ -34,6 +41,7 @@ let lastAnalyzedHash = "";
 let activeIndex = 0;
 let dismissed = false;
 let requestSeq = 0;
+let demoRunning = false;
 
 /* ---------------- lifecycle ---------------- */
 
@@ -72,6 +80,7 @@ function stop(): void {
   if (demoTimer !== null) window.clearTimeout(demoTimer);
   rescanTimer = null;
   demoTimer = null;
+  demoRunning = false;
   hud.destroy();
   hud = null;
   if (input) restorePlaceholder(input);
@@ -108,6 +117,8 @@ function reposition(): void {
 /* ---------------- watching ---------------- */
 
 function onMutations(records: MutationRecord[]): void {
+  // The demo writes its own messages into the page, so the watcher stays out of the way.
+  if (demoRunning) return;
   const ours = records.every((record) => hud?.element.contains(record.target as Node));
   if (ours) return;
   if (debounceTimer !== null) window.clearTimeout(debounceTimer);
@@ -187,12 +198,12 @@ function onInputEvent(event: Event): void {
   if (event.target === input) updateGhost();
 }
 
-function accept(): void {
+function accept(log = "已採用建議回覆"): void {
   const suggestion = currentSuggestion();
   if (!suggestion || !input) return;
   insertSuggestion(input, suggestion);
   hideGhost();
-  hud?.pushLog("已採用建議回覆", false);
+  hud?.pushLog(log, false);
 }
 
 function onKeydown(event: KeyboardEvent): void {
@@ -229,21 +240,90 @@ function onKeydown(event: KeyboardEvent): void {
 
 /* ---------------- demo ---------------- */
 
+interface DemoBeat {
+  /** Milliseconds to wait before this beat plays. */
+  after: number;
+  run(panel: Hud): void;
+}
+
+/** The demo page listens for these; the content script never touches the host DOM itself. */
+function demoEvent(detail: DemoEventDetail): void {
+  document.dispatchEvent(new CustomEvent(DEMO_EVENT, { detail }));
+}
+
+/** Plays the beats one after another on the single cancellable demo timer. */
+function playBeats(beats: DemoBeat[], index = 0): void {
+  const beat = beats[index];
+  if (!beat) return;
+  demoTimer = window.setTimeout(() => {
+    if (!hud || !demoRunning) return;
+    beat.run(hud);
+    playBeats(beats, index + 1);
+  }, beat.after);
+}
+
+/**
+ * One step of the demo conversation: the other party writes, the HUD thinks, the
+ * suggestion appears as ghost text, Tab accepts it and the reply is sent.
+ */
 function runDemo(step = 0, loop = false): void {
   if (!hud) return;
-  if (step === 0) {
-    hud.pushLog(loop ? "Demo 模式：自動循環播放" : "Demo 模式：展示四種情緒", false);
-    // A demo is for looking at, so always start from the full panel.
-    hud.setCollapsed(false);
-    void saveHudCollapsed(false);
-  }
   const result = DEMO_RESULTS[step];
   if (!result) return;
-  applyResult(result);
-  const next = step + 1 < DEMO_RESULTS.length ? step + 1 : loop ? 0 : -1;
-  if (next >= 0) {
-    demoTimer = window.setTimeout(() => runDemo(next, loop), DEMO_STEP_MS);
+  if (step === 0) {
+    hud.pushLog(loop ? "Demo 模式：自動循環播放" : "Demo 模式：展示一輪對話", false);
+    // A demo is for looking at, so let the placement decide instead of an old choice.
+    hud.setCollapsed(null);
   }
+  demoRunning = true;
+
+  let reply = "";
+  playBeats([
+    { after: DEMO_INCOMING_MS, run: () => demoEvent({ phase: "incoming", text: result.incoming }) },
+    {
+      after: DEMO_ANALYZE_MS,
+      run: (panel) => {
+        panel.setState({ kind: "analyzing" });
+        hideGhost();
+      },
+    },
+    { after: DEMO_RESULT_MS, run: () => applyResult(result) },
+    {
+      after: DEMO_ACCEPT_MS,
+      run: () => {
+        reply = currentSuggestion() ?? "";
+        accept("已按 Tab 採用建議");
+      },
+    },
+    {
+      after: DEMO_SEND_MS,
+      run: (panel) => {
+        demoEvent({ phase: "reply", text: reply });
+        // The ghost would come straight back on the now empty input.
+        dismissed = true;
+        if (input) insertSuggestion(input, "");
+        hideGhost();
+        panel.pushLog("已送出回覆", false);
+      },
+    },
+    {
+      after: DEMO_NEXT_MS,
+      run: () => {
+        const next = step + 1;
+        if (next < DEMO_RESULTS.length) {
+          runDemo(next, loop);
+          return;
+        }
+        if (!loop) {
+          demoRunning = false;
+          return;
+        }
+        // Back to the two opening messages, so the list never grows without end.
+        demoEvent({ phase: "reset" });
+        runDemo(0, loop);
+      },
+    },
+  ]);
 }
 
 /* ---------------- wiring ---------------- */

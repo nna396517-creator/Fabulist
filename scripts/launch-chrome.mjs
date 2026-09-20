@@ -56,7 +56,7 @@ await waitFor("the content script on the demo page", async () => {
   if (!state.result?.value?.active) throw new Error("content script not active yet");
 });
 await inWorker(`chrome.tabs.query({ url: "${demoUrl.replace("chat.html", "*")}" }).then((tabs) => chrome.tabs.sendMessage(tabs[0].id, { type: "demo", loop: true }))`);
-console.log("demo running: the HUD loops through 4 emotions every 2 s. Ctrl+C stops the demo server.");
+console.log("demo running: the demo page plays a looping conversation. Ctrl+C stops the demo server.");
 
 async function cdp(url, method, params) {
   const ws = new WebSocket(url);
