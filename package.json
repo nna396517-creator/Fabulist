@@ -9,7 +9,8 @@
     "watch": "node scripts/build.mjs --watch",
     "icons": "node scripts/gen-icons.mjs",
     "typecheck": "tsc --noEmit",
-    "demo": "node scripts/demo-server.mjs"
+    "demo": "node scripts/launch-chrome.mjs",
+    "demo:server": "node scripts/demo-server.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",
